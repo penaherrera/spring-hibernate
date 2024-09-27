@@ -20,14 +20,20 @@ public class PostController {
 
     // Endpoint para obtener todos los posts
     @GetMapping
-    public List<Post> getAllPosts() {
-        return postService.getAllPosts();
+    public ResponseEntity<List<Post>> getAllPosts() {
+        List<Post> posts = postService.getAllPosts();
+        return ResponseEntity.ok(posts); // 200 OK
     }
 
     // Endpoint para obtener un post por ID
     @GetMapping("/{id}")
-    public Post getPostById(@PathVariable Long id) {
-        return postService.getPostById(id);
+    public ResponseEntity<Post> getPostById(@PathVariable Long id) {
+        Post post = postService.getPostById(id);
+        if (post != null) {
+            return ResponseEntity.ok(post); // 200 OK
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // 404 Not Found
+        }
     }
 
     // Endpoint para crear un nuevo post
@@ -35,12 +41,30 @@ public class PostController {
     public ResponseEntity<String> createPost(@RequestBody Post post) {
         postService.savePost(post);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body("Post created successfully");
+                .body("Post created successfully"); // 201 Created
     }
 
     // Endpoint para eliminar un post por ID
     @DeleteMapping("/{id}")
-    public void deletePostById(@PathVariable Long id) {
-        postService.deletePostById(id);
+    public ResponseEntity<Void> deletePost(@PathVariable Long id) {
+        Post post = postService.getPostById(id);
+        if (post != null) {
+            postService.deletePost(id);
+            return ResponseEntity.noContent().build(); // 204 No Content
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // 404 Not Found
+        }
+    }
+
+    // Endpoint para actualizar un post
+    @PutMapping("/{id}")
+    public ResponseEntity<String> updatePost(@PathVariable Long id, @RequestBody Post updatedPost) {
+        Post existingPost = postService.getPostById(id);
+        if (existingPost != null) {
+            postService.updatePost(id, updatedPost);
+            return ResponseEntity.ok("Post updated successfully"); // 200 OK
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // 404 Not Found
+        }
     }
 }

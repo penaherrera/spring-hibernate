@@ -38,4 +38,15 @@ public class PostRepository {
                 .setParameter("id", id)
                 .executeUpdate();
     }
+
+    public void update(final Long id, final Post updatedPost) {
+        Post post = findById(id);
+
+        if (post != null) {
+            post.setTitle(updatedPost.getTitle());
+
+            sessionFactory.getCurrentSession().merge(post);
+        }
+    }
+
 }

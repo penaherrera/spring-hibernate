@@ -19,9 +19,7 @@ public class PostService {
 
     // Lógica del servicio
     public List<Post> getAllPosts() {
-        List<Post> posts = postRepository.findAll();
-        System.out.println("Posts: " + posts); // Imprimir la lista de posts
-        return posts;
+        return postRepository.findAll();
     }
 
     public Post getPostById(Long id) {
@@ -32,11 +30,11 @@ public class PostService {
         postRepository.save(post);
     }
 
-    public void deletePost(Post post) {
-        postRepository.delete(post);
+    public void updatePost(Long id, Post updatedPost) {
+        postRepository.update(id, updatedPost);
     }
 
-    public void deletePostById(Long id) {
+    public void deletePost(Long id) {
         postRepository.deleteById(id);
     }
 }
